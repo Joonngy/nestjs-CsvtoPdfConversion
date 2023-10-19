@@ -4,11 +4,6 @@ import { AppService } from './app.service';
 import { MulterModule } from '@nestjs/platform-express';
 
 @Module({
-  imports: [
-    MulterModule.register({
-      dest: './uploads/csv',
-    }),
-  ],
   controllers: [AppController],
   providers: [AppService],
 })

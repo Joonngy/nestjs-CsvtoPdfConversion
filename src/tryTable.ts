@@ -1,14 +1,12 @@
-import * as fs from 'fs';
-import * as csv from 'csv-parser';
 import PDFDocument from 'pdfkit-table';
+import PDFDocumentWithTables from 'pdfkit-table';
 
 export class CSVtoPDF {
   constructor() {}
-  private outputFile: string = './document.pdf';
 
   private table = {
     title: '',
-    headers: ['First', 'Last', 'Number', 'Street', 'City', 'Postcode'],
+    headers: [''],
     rows: [['']],
   };
 
@@ -24,32 +22,28 @@ export class CSVtoPDF {
     },
   };
 
-  public ReadStream(inputFile: string, doc: PDFDocument) {
-    fs.createReadStream(inputFile)
-      .pipe(csv())
-      .on('data', (row) => {
-        this.table.rows.push([
-          row['First'],
-          row['Last'],
-          row['Number'],
-          row['Street'],
-          row['City'],
-          row['Postcode'],
-        ]);
-      })
-      .on('end', () => {
-        doc.table(this.table, this.options);
-        doc.end();
-        console.log('Success');
-      });
-  }
+  public conversionTop(arr : string[][]):PDFDocument {
+    const doc: PDFDocument = new PDFDocumentWithTables();
 
-  public conversionTop(inputFile: string, stream: fs.WriteStream) {
-    const doc: PDFDocument = new PDFDocument();
-    stream = fs.createWriteStream(this.outputFile);
-    doc.pipe(stream);
+    this.table.headers.pop();
     this.table.rows.pop();
-    this.ReadStream(inputFile, doc);
-    return this.outputFile;
+    
+    let i=0;
+    for(let i=0;i<arr[0].length;i++) {
+      this.table.headers.push(arr[0][i]);
+    }
+
+
+    for(let i=1;i<arr.length;i++){
+      this.table.rows[i-1] = [];
+      for(let j=0;j<arr[i].length;j++){
+        this.table.rows[i-1].push(arr[i][j].replaceAll("\"", ""));
+      }
+    }
+
+    doc.table(this.table, this.options);
+    return doc;
   }
 }
+
+
