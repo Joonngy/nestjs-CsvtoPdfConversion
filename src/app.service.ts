@@ -1,10 +1,10 @@
 import { Injectable } from "@nestjs/common";
-import { CSVtoPDF } from "./tryTable";
+import { ConversionService } from "./pdf-conversion/conversion.service";
 import PDFDocument from "pdfkit-table";
 
 @Injectable()
 export class AppService {
-  getCSVandConvertToPDF(file):PDFDocument {
+  getCSVandConvertToPDF(file): PDFDocument {
     const arr: string[] = file.buffer.toString().split("\n");
     let arr2d: string[][] = [];
     let temp: string;
@@ -23,12 +23,8 @@ export class AppService {
 
     arr2d.pop();
 
-    const createPDF = new CSVtoPDF();
-    
-    return createPDF.conversionTop(arr2d);
-  }
+    const createPDF = new ConversionService();
 
-  getHello() {
-    return { hello: "world" };
+    return createPDF.conversionTop(arr2d);
   }
 }

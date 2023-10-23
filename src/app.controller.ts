@@ -14,11 +14,6 @@ import PDFDocumentWithTables from "pdfkit-table";
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get()
-  sayHello() {
-    return this.appService.getHello();
-  }
-
   @Post("upload")
   @UseInterceptors(FileInterceptor("file"))
   async upload(@UploadedFile() file, @Response() res) {
